@@ -108,6 +108,11 @@ function generatePlan(days, chaptersPerDay, containerId) {
         }
         
         let chapterIndex = 0;
+        const totalChapters = allChapters.length; // Use actual chapter count from array
+        
+        // Calculate base chapters per day and remainder
+        const baseChaptersPerDay = Math.floor(totalChapters / days);
+        const remainderChapters = totalChapters % days;
         
         for (let day = 1; day <= days; day++) {
             const dayCard = document.createElement('div');
@@ -121,10 +126,10 @@ function generatePlan(days, chaptersPerDay, containerId) {
             const readingList = document.createElement('ul');
             readingList.className = 'reading-list';
             
-            let chaptersForDay = chaptersPerDay;
-            if (day === days) {
-                chaptersForDay = Math.min(chaptersPerDay, allChapters.length - chapterIndex);
-            }
+            // Add one extra chapter to early days if there's a remainder
+            const chaptersForDay = day <= remainderChapters 
+                ? baseChaptersPerDay + 1 
+                : baseChaptersPerDay;
             
             const dayProgressBar = document.createElement('div');
             dayProgressBar.className = 'day-progress';
@@ -135,7 +140,7 @@ function generatePlan(days, chaptersPerDay, containerId) {
             `;
             dayCard.appendChild(dayProgressBar);
             
-            for (let i = 0; i < chaptersForDay && chapterIndex < allChapters.length; i++) {
+            for (let i = 0; i < chaptersForDay && chapterIndex < totalChapters; i++) {
                 const listItem = document.createElement('li');
                 const chapterId = `${containerId}-day-${day}-chapter-${i}`;
                 listItem.setAttribute('id', chapterId);
@@ -153,7 +158,7 @@ function generatePlan(days, chaptersPerDay, containerId) {
                         localStorage.removeItem(chapterId);
                     }
                     updateDayProgress(containerId, day);
-                    updateOverallProgress(containerId.replace('-content', '')); // Add this line
+                    updateOverallProgress(containerId.replace('-content', ''));
                 });
                 
                 readingList.appendChild(listItem);
