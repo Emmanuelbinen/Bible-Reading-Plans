@@ -245,3 +245,94 @@ header h1 {
     margin-bottom: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
+
+// ...existing code...
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+        margin: 0;
+        width: 100%;
+    }
+    
+    header {
+        padding: 20px 10px;
+        margin-bottom: 20px;
+    }
+    
+    header h1 {
+        font-size: 1.8em;
+    }
+    
+    .subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .plan-btn {
+        padding: 10px 15px;
+        font-size: 0.9em;
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .plan-section {
+        padding: 15px;
+        margin: 10px 0;
+    }
+    
+    .reading-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .day-card {
+        padding: 15px;
+    }
+    
+    .reading-list li {
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+    
+    .stats-box {
+        padding: 15px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .stat-number {
+        font-size: 1.4em;
+    }
+    
+    .stat-label {
+        font-size: 0.8em;
+    }
+    
+    .plan-progress {
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+}
+
+// Responsive design for very small screens
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.5em;
+    }
+    
+    .subtitle {
+        font-size: 1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .plan-btn {
+        font-size: 0.85em;
+        padding: 8px 12px;
+    }
+}
