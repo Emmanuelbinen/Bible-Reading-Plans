@@ -8,7 +8,7 @@ body {
     background-color: #f4f4f4;
     color: #333;
     line-height: 1.6;
-    mid-width: 100vh;
+    min-width: 100vh;
 }
 
 .container {
@@ -20,7 +20,7 @@ header {
     text-align: center;
     margin-bottom: 40px;
     background: #fff;
-    padding 40px 20px;
+    padding: 40px 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
@@ -29,12 +29,12 @@ header h1 {
     color: #2c3e50;
     font-size: 300;
     margin-bottom: 10px;
-    color: #333;
+    /* color: #333; */
 }
 
 .subtitle {
     color: #777;
-    font-size: 2.5 rem;
+    font-size: 2.5rem;
     font-style: italic;
 }
 .plan-selector {
@@ -44,7 +44,7 @@ header h1 {
     margin: 30px 0;
     gap: 15px;
     flex-wrap: wrap;
-    width = 100%;
+    width: 100%;
 }
 .plan-btn {
     background: #3498db;
@@ -143,6 +143,8 @@ header h1 {
             border-left: 4px solid #3498db;
             font-size: 0.95em;
             transition: all 0.2s ease;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .reading-list li:hover {
@@ -222,11 +224,6 @@ header h1 {
     background-color: #27ae60;
     width: 0;
     transition: width 0.3s ease;
-}
-
-.reading-list li {
-    cursor: pointer;
-    transition: all 0.3s ease;
 }
 
 .reading-list li.completed {
