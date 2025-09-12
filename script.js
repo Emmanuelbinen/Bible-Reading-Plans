@@ -83,9 +83,11 @@ function createChapterList() {
         const allChapters = createChapterList();
 
         function generatePlan(days, chaptersPerDay, containerId) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            
+            try {
+                const container = document.getElementById(containerId);
+                if (!container) {
+                    throw new Error(`Container with ID ${containerId} not found`);
+        }
             let chapterIndex = 0;
             
             for (let day = 1; day <= days; day++) {
@@ -117,8 +119,12 @@ function createChapterList() {
                 container.appendChild(dayCard);
                 
                 if (chapterIndex >= allChapters.length) break;
-            }
-        }
+            } 
+        } catch (error) {
+        console.error('Error generating reading plan:', error);
+        // Display an error message in the container
+    }
+}
 
         function showPlan(planId) {
             // Hide all plans
