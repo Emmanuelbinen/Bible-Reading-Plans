@@ -185,10 +185,6 @@ function updateDayProgress(containerId, day) {
     }
 }
 
-function updateDayProgress(containerId, day) {
-    // ...existing updateDayProgress code...
-}
-
 /**
  * Updates the overall progress of a reading plan
  * @param {string} planId - ID of the plan (e.g., 'plan365')
