@@ -9,12 +9,17 @@ body {
     color: #333;
     line-height: 1.6;
     min-width: 100vh;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 .container {
     max-width: 1200px;
     margin: 0  auto;
     padding: 20px;
+    width: 100%;
+    overflow-x: hidden;
 }
 header {
     text-align: center;
@@ -246,7 +251,7 @@ header h1 {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-// ...existing code...
+
 
 @media (max-width: 768px) {
     .container {
@@ -317,22 +322,53 @@ header h1 {
     }
 }
 
-// Responsive design for very small screens
 @media (max-width: 480px) {
-    header h1 {
-        font-size: 1.5em;
+    body {
+        font-size: 16px;
     }
-    
-    .subtitle {
+
+    .container {
+        padding: 8px;
+    }
+
+    .plan-selector {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .plan-btn {
+        width: 95%;
         font-size: 1rem;
+        padding: 15px;
+        margin: 5px auto;
     }
-    
+
+    .reading-list li {
+        padding: 16px 12px;
+        margin: 6px 0;
+        font-size: 1rem;
+        border-left-width: 3px;
+    }
+
+    .day-card {
+        margin: 8px 0;
+        padding: 15px;
+    }
+
+    .stats-box {
+        padding: 15px 10px;
+    }
+
     .stats-grid {
         grid-template-columns: 1fr;
+        gap: 10px;
     }
-    
-    .plan-btn {
-        font-size: 0.85em;
-        padding: 8px 12px;
+
+    .plan-progress {
+        margin: 10px 5px;
+    }
+
+    .subtitle {
+        font-size: 1.2rem;
     }
 }
