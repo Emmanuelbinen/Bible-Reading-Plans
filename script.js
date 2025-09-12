@@ -1,4 +1,13 @@
-// Bible books with chapter counts
+/**
+ * Bible Reading Plans
+ * This script manages the Bible reading plan functionality including:
+ * - Plan generation (365, 180, and 90 days)
+ * - Progress tracking
+ * - Local storage persistence
+ * - Plan switching
+ */
+
+// Bible books array with their chapter counts
 const bibleBooks = [
             {name: "Genesis", chapters: 50},
             {name: "Exodus", chapters: 40},
@@ -69,7 +78,10 @@ const bibleBooks = [
         ];
 
 // This function will create chapter list with book and chapter references
-
+/**
+ * Creates a flat array of all Bible chapters
+ * @returns {Array} Array of strings in format "Book Chapter#"
+ */
 function createChapterList() {
             const chapters = [];
             bibleBooks.forEach(book => {
@@ -79,9 +91,15 @@ function createChapterList() {
             });
             return chapters;
         }
-
+        // Initialize the complete chapter list
         const allChapters = createChapterList();
 
+/**
+ * Generates a reading plan with specified parameters
+ * @param {number} days - Total number of days in the plan
+ * @param {number} chaptersPerDay - Number of chapters to read per day
+ * @param {string} containerId - DOM element ID where the plan will be rendered
+ */
 function generatePlan(days, chaptersPerDay, containerId) {
     try {
         const container = document.getElementById(containerId);
@@ -151,7 +169,11 @@ function generatePlan(days, chaptersPerDay, containerId) {
     }
 }
 
-
+/**
+ * Updates the progress bar for a specific day
+ * @param {string} containerId - ID of the plan container
+ * @param {number} day - Day number to update
+ */
 function updateDayProgress(containerId, day) {
     const dayProgressBar = document.getElementById(`${containerId}-day-${day}-progress`);
     const dayChapters = document.querySelectorAll(`#${containerId} li[id^="${containerId}-day-${day}-chapter"]`);
@@ -167,6 +189,10 @@ function updateDayProgress(containerId, day) {
     // ...existing updateDayProgress code...
 }
 
+/**
+ * Updates the overall progress of a reading plan
+ * @param {string} planId - ID of the plan (e.g., 'plan365')
+ */
 function updateOverallProgress(planId) {
     const plan = document.getElementById(`${planId}-content`);
     const dayCards = plan.querySelectorAll('.day-card');
@@ -192,6 +218,10 @@ function updateOverallProgress(planId) {
     }
 }
 
+/**
+ * Switches between different reading plans
+ * @param {string} planId - ID of the plan to display
+ */
 function showPlan(planId) {
     document.querySelectorAll('.plan-section').forEach(plan => {
         plan.classList.remove('active');
@@ -205,6 +235,12 @@ function showPlan(planId) {
 }
 
 // Initialize plans when the page loads
+/**
+ * Initialize the application
+ * - Generates all reading plans
+ * - Sets up event listeners
+ * - Restores progress from localStorage
+ */
 window.addEventListener('load', function() {
     generatePlan(365, 5, 'plan365-content');
     generatePlan(180, 10, 'plan180-content');
