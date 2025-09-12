@@ -82,71 +82,182 @@ function createChapterList() {
 
         const allChapters = createChapterList();
 
-        function generatePlan(days, chaptersPerDay, containerId) {
-            try {
-                const container = document.getElementById(containerId);
-                if (!container) {
-                    throw new Error(`Container with ID ${containerId} not found`);
+function generatePlan(days, chaptersPerDay, containerId) {
+    try {
+        const container = document.getElementById(containerId);
+        if (!container) {
+            throw new Error(`Container with ID ${containerId} not found`);
         }
-            let chapterIndex = 0;
+        
+        let chapterIndex = 0;
+        
+        for (let day = 1; day <= days; day++) {
+            const dayCard = document.createElement('div');
+            dayCard.className = 'day-card';
             
-            for (let day = 1; day <= days; day++) {
-                const dayCard = document.createElement('div');
-                dayCard.className = 'day-card';
+            const dayNumber = document.createElement('div');
+            dayNumber.className = 'day-number';
+            dayNumber.textContent = `Day ${day}`;
+            dayCard.appendChild(dayNumber);
+            
+            const readingList = document.createElement('ul');
+            readingList.className = 'reading-list';
+            
+            let chaptersForDay = chaptersPerDay;
+            if (day === days) {
+                chaptersForDay = Math.min(chaptersPerDay, allChapters.length - chapterIndex);
+            }
+            
+            const dayProgressBar = document.createElement('div');
+            dayProgressBar.className = 'day-progress';
+            dayProgressBar.innerHTML = `
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" id="${containerId}-day-${day}-progress"></div>
+                </div>
+            `;
+            dayCard.appendChild(dayProgressBar);
+            
+            for (let i = 0; i < chaptersForDay && chapterIndex < allChapters.length; i++) {
+                const listItem = document.createElement('li');
+                const chapterId = `${containerId}-day-${day}-chapter-${i}`;
+                listItem.setAttribute('id', chapterId);
+                listItem.textContent = allChapters[chapterIndex];
                 
-                const dayNumber = document.createElement('div');
-                dayNumber.className = 'day-number';
-                dayNumber.textContent = `Day ${day}`;
-                dayCard.appendChild(dayNumber);
-                
-                const readingList = document.createElement('ul');
-                readingList.className = 'reading-list';
-                
-                let chaptersForDay = chaptersPerDay;
-                if (day === days) {
-                    // Last day - read remaining chapters
-                    chaptersForDay = allChapters.length - chapterIndex;
+                if (localStorage.getItem(chapterId) === 'completed') {
+                    listItem.classList.add('completed');
                 }
                 
-                for (let i = 0; i < chaptersForDay && chapterIndex < allChapters.length; i++) {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = allChapters[chapterIndex];
-                    readingList.appendChild(listItem);
-                    chapterIndex++;
-                }
+                listItem.addEventListener('click', () => {
+                    listItem.classList.toggle('completed');
+                    if (listItem.classList.contains('completed')) {
+                        localStorage.setItem(chapterId, 'completed');
+                    } else {
+                        localStorage.removeItem(chapterId);
+                    }
+                    updateDayProgress(containerId, day);
+                    updateOverallProgress(containerId.replace('-content', '')); // Add this line
+                });
                 
-                dayCard.appendChild(readingList);
-                container.appendChild(dayCard);
-                
-                if (chapterIndex >= allChapters.length) break;
-            } 
-        } catch (error) {
+                readingList.appendChild(listItem);
+                chapterIndex++;
+            }
+            
+            dayCard.appendChild(readingList);
+            container.appendChild(dayCard);
+            updateDayProgress(containerId, day);
+        }
+    } catch (error) {
         console.error('Error generating reading plan:', error);
-        // Display an error message in the container
     }
 }
 
-        function showPlan(planId) {
-            // Hide all plans
-            document.querySelectorAll('.plan-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Remove active class from all buttons
-            document.querySelectorAll('.plan-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Show selected plan
-            document.getElementById(planId).classList.add('active');
-            
-            // Add active class to clicked button
-            event.target.classList.add('active');
-        }
 
-        // Generate all plans when page loads
-        window.addEventListener('load', function() {
-            generatePlan(365, 5, 'plan365-content'); // ~3.26 chapters per day, rounded to 5
-            generatePlan(180, 10, 'plan180-content'); // ~6.6 chapters per day, rounded to 10
-            generatePlan(90, 13, 'plan90-content'); // ~13.2 chapters per day
-        });
+function updateDayProgress(containerId, day) {
+    const dayProgressBar = document.getElementById(`${containerId}-day-${day}-progress`);
+    const dayChapters = document.querySelectorAll(`#${containerId} li[id^="${containerId}-day-${day}-chapter"]`);
+    const completedChapters = document.querySelectorAll(`#${containerId} li[id^="${containerId}-day-${day}-chapter"].completed`).length;
+    
+    if (dayProgressBar && dayChapters.length > 0) {
+        const progress = (completedChapters / dayChapters.length) * 100;
+        dayProgressBar.style.width = `${progress}%`;
+    }
+}
+
+function updateDayProgress(containerId, day) {
+    // ...existing updateDayProgress code...
+}
+
+function updateOverallProgress(planId) {
+    const plan = document.getElementById(`${planId}-content`);
+    const dayCards = plan.querySelectorAll('.day-card');
+    let completedDays = 0;
+    
+    // Count completed days
+    dayCards.forEach(dayCard => {
+        const chapters = dayCard.querySelectorAll('.reading-list li');
+        const completedChapters = dayCard.querySelectorAll('.reading-list li.completed');
+        if (chapters.length > 0 && chapters.length === completedChapters.length) {
+            completedDays++;
+        }
+    });
+    
+    // Update progress display
+    const totalDays = parseInt(planId.replace('plan', ''));
+    const progressSpan = document.getElementById(`${planId}-progress`);
+    const progressBar = document.getElementById(`${planId}-bar`);
+    
+    if (progressSpan && progressBar) {
+        progressSpan.textContent = `${completedDays}/${totalDays} days`;
+        progressBar.style.width = `${(completedDays / totalDays) * 100}%`;
+    }
+}
+
+function showPlan(planId) {
+    document.querySelectorAll('.plan-section').forEach(plan => {
+        plan.classList.remove('active');
+    });
+    document.getElementById(planId).classList.add('active');
+    
+    document.querySelectorAll('.plan-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`button[onclick*="${planId}"]`).classList.add('active');
+}
+
+// Initialize plans when the page loads
+window.addEventListener('load', function() {
+    generatePlan(365, 5, 'plan365-content');
+    generatePlan(180, 10, 'plan180-content');
+    generatePlan(90, 13, 'plan90-content');
+});
+
+function updateProgress(containerId, day, chaptersPerDay) {
+    // Update day progress
+    const dayBar = document.getElementById(`${containerId}-day-${day}-bar`);
+    const completedChapters = document.querySelectorAll(`#${containerId} #${containerId}-day-${day}-chapter-${day} .completed`).length;
+    const dayProgress = (completedChapters / chaptersPerDay) * 100;
+    if (dayBar) {
+        dayBar.style.width = `${dayProgress}%`;
+    }
+    
+    // Update overall progress
+    const totalDays = parseInt(containerId.replace('plan', ''));
+    const completedDays = document.querySelectorAll(`#${containerId} .day-card`).length;
+    const progressSpan = document.getElementById(`${containerId}-progress`);
+    const totalBar = document.getElementById(`${containerId}-bar`);
+    if (progressSpan && totalBar) {
+        progressSpan.textContent = `${completedDays}/${totalDays} days`;
+        totalBar.style.width = `${(completedDays / totalDays) * 100}%`;
+    }
+}
+
+// ...existing code...
+
+// Add this function to handle plan switching
+function showPlan(planId) {
+    // Hide all plans
+    document.querySelectorAll('.plan-section').forEach(plan => {
+        plan.classList.remove('active');
+    });
+    // Show selected plan
+    document.getElementById(planId).classList.add('active');
+    
+    // Remove active class from all buttons
+    document.querySelectorAll('.plan-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    // Add active class to clicked button
+    document.querySelector(`[onclick="showPlan('${planId}')"]`).classList.add('active');
+}
+
+// Add initialization code
+window.addEventListener('load', function() {
+    generatePlan(365, 5, 'plan365-content');
+    generatePlan(180, 10, 'plan180-content');
+    generatePlan(90, 13, 'plan90-content');
+    
+    // Initialize overall progress for each plan
+    updateOverallProgress('plan365');
+    updateOverallProgress('plan180');
+    updateOverallProgress('plan90');
+});
