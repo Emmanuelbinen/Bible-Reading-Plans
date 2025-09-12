@@ -108,28 +108,37 @@ function generatePlan(days, chaptersPerDay, containerId) {
         }
         
         let chapterIndex = 0;
-        const totalChapters = allChapters.length; // Use actual chapter count from array
+        const totalChapters = allChapters.length;
         
-        // Calculate base chapters per day and remainder
         const baseChaptersPerDay = Math.floor(totalChapters / days);
         const remainderChapters = totalChapters % days;
         
         for (let day = 1; day <= days; day++) {
             const dayCard = document.createElement('div');
-            dayCard.className = 'day-card';
+            dayCard.className = 'day-card collapsed';
+            
+            const dayHeader = document.createElement('div');
+            dayHeader.className = 'day-header';
             
             const dayNumber = document.createElement('div');
             dayNumber.className = 'day-number';
             dayNumber.textContent = `Day ${day}`;
-            dayCard.appendChild(dayNumber);
             
-            const readingList = document.createElement('ul');
-            readingList.className = 'reading-list';
+            const expandIcon = document.createElement('span');
+            expandIcon.className = 'expand-icon';
+            expandIcon.innerHTML = '▼';
             
-            // Add one extra chapter to early days if there's a remainder
-            const chaptersForDay = day <= remainderChapters 
-                ? baseChaptersPerDay + 1 
-                : baseChaptersPerDay;
+            dayHeader.appendChild(dayNumber);
+            dayHeader.appendChild(expandIcon);
+            dayCard.appendChild(dayHeader);
+            
+            dayHeader.addEventListener('click', () => {
+                dayCard.classList.toggle('collapsed');
+                expandIcon.innerHTML = dayCard.classList.contains('collapsed') ? '▼' : '▲';
+            });
+            
+            const contentWrapper = document.createElement('div');
+            contentWrapper.className = 'day-content';
             
             const dayProgressBar = document.createElement('div');
             dayProgressBar.className = 'day-progress';
@@ -138,7 +147,14 @@ function generatePlan(days, chaptersPerDay, containerId) {
                     <div class="progress-bar-fill" id="${containerId}-day-${day}-progress"></div>
                 </div>
             `;
-            dayCard.appendChild(dayProgressBar);
+            contentWrapper.appendChild(dayProgressBar);
+            
+            const readingList = document.createElement('ul');
+            readingList.className = 'reading-list';
+            
+            const chaptersForDay = day <= remainderChapters 
+                ? baseChaptersPerDay + 1 
+                : baseChaptersPerDay;
             
             for (let i = 0; i < chaptersForDay && chapterIndex < totalChapters; i++) {
                 const listItem = document.createElement('li');
@@ -150,7 +166,8 @@ function generatePlan(days, chaptersPerDay, containerId) {
                     listItem.classList.add('completed');
                 }
                 
-                listItem.addEventListener('click', () => {
+                listItem.addEventListener('click', (event) => {
+                    event.stopPropagation(); // Prevent triggering parent click
                     listItem.classList.toggle('completed');
                     if (listItem.classList.contains('completed')) {
                         localStorage.setItem(chapterId, 'completed');
@@ -165,7 +182,8 @@ function generatePlan(days, chaptersPerDay, containerId) {
                 chapterIndex++;
             }
             
-            dayCard.appendChild(readingList);
+            contentWrapper.appendChild(readingList);
+            dayCard.appendChild(contentWrapper);
             container.appendChild(dayCard);
             updateDayProgress(containerId, day);
         }
@@ -173,7 +191,6 @@ function generatePlan(days, chaptersPerDay, containerId) {
         console.error('Error generating reading plan:', error);
     }
 }
-
 /**
  * Updates the progress bar for a specific day
  * @param {string} containerId - ID of the plan container
