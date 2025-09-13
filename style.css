@@ -292,10 +292,47 @@ header h1 {
 
 .footer {
     text-align: center;
-    padding: 20px 0;
+    padding: 30px 0;
     margin-top: 40px;
     border-top: 1px solid #eee;
     color: #666;
+    background: #f8f9fa;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #666;
+}
+
+.contact-icon {
+    font-size: 1.2em;
+}
+
+.footer a {
+    color: #3498db;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+.copyright {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 20px;
 }
 
 // Site logo
@@ -497,8 +534,18 @@ header h1 {
     .plan-description {
         font-size: 0.95em;
     }
+
+        .footer {
+        padding: 20px 10px;
+    }
+    
+    .contact-item {
+        font-size: 0.9em;
+    }
+
 }
 
+/* Very small phones */
 /* Very small phones */
 @media (max-width: 360px) {
     .container {
@@ -512,22 +559,28 @@ header h1 {
         padding: 15px 8px;
         margin: 0 0 15px 0;
     }
+
+    .logo-img {
+        max-width: 100px;
+    }
     
     header h1 {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
     }
     
     .subtitle {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
     
     .plan-btn {
         padding: 12px 14px;
         font-size: 0.85rem;
+        margin: 3px 0;
     }
     
     .plan-section {
         padding: 12px;
+        margin: 8px 0;
     }
     
     .day-header {
@@ -541,6 +594,8 @@ header h1 {
     .reading-list li {
         padding: 8px 10px;
         font-size: 0.85rem;
+        margin: 4px 0;
+        border-left-width: 3px;
     }
     
     .day-number {
@@ -549,5 +604,36 @@ header h1 {
     
     .plan-progress {
         padding: 10px;
+        margin-bottom: 12px;
+    }
+
+    .stats-box {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .stat-number {
+        font-size: 1.3em;
+    }
+
+    .stat-label {
+        font-size: 0.75em;
+    }
+
+    .contact-info {
+        gap: 10px;
+    }
+
+    .contact-item {
+        font-size: 0.8em;
+    }
+
+    .contact-icon {
+        font-size: 1em;
+    }
+
+    .copyright {
+        font-size: 0.8em;
+        margin-top: 15px;
     }
 }
