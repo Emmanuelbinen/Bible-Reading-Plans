@@ -100,7 +100,8 @@ function createChapterList() {
  * @param {number} chaptersPerDay - Number of chapters to read per day
  * @param {string} containerId - DOM element ID where the plan will be rendered
  */
-function generatePlan(days, chaptersPerDay, containerId) {
+
+function generatePlan(maxDays, chaptersPerDay, containerId) {
     try {
         const container = document.getElementById(containerId);
         if (!container) {
@@ -110,13 +111,15 @@ function generatePlan(days, chaptersPerDay, containerId) {
         let chapterIndex = 0;
         const totalChapters = allChapters.length;
         
-        const baseChaptersPerDay = Math.floor(totalChapters / days);
-        const remainderChapters = totalChapters % days;
+        // Calculate actual number of days needed based on chaptersPerDay
+        const actualDaysNeeded = Math.ceil(totalChapters / chaptersPerDay);
+        const daysToGenerate = Math.min(maxDays, actualDaysNeeded);
         
-        for (let day = 1; day <= days; day++) {
+        for (let day = 1; day <= daysToGenerate; day++) {
             const dayCard = document.createElement('div');
             dayCard.className = 'day-card collapsed';
             
+            // Create day header
             const dayHeader = document.createElement('div');
             dayHeader.className = 'day-header';
             
@@ -152,11 +155,16 @@ function generatePlan(days, chaptersPerDay, containerId) {
             const readingList = document.createElement('ul');
             readingList.className = 'reading-list';
             
-            const chaptersForDay = day <= remainderChapters 
-                ? baseChaptersPerDay + 1 
-                : baseChaptersPerDay;
+            // Use the specified chaptersPerDay, but adjust for the last day if needed
+            let chaptersForThisDay = chaptersPerDay;
             
-            for (let i = 0; i < chaptersForDay && chapterIndex < totalChapters; i++) {
+            // If this is the last day and we have fewer chapters remaining
+            const remainingChapters = totalChapters - chapterIndex;
+            if (remainingChapters < chaptersPerDay) {
+                chaptersForThisDay = remainingChapters;
+            }
+            
+            for (let i = 0; i < chaptersForThisDay && chapterIndex < totalChapters; i++) {
                 const listItem = document.createElement('li');
                 const chapterId = `${containerId}-day-${day}-chapter-${i}`;
                 listItem.setAttribute('id', chapterId);
@@ -167,7 +175,7 @@ function generatePlan(days, chaptersPerDay, containerId) {
                 }
                 
                 listItem.addEventListener('click', (event) => {
-                    event.stopPropagation(); // Prevent triggering parent click
+                    event.stopPropagation();
                     listItem.classList.toggle('completed');
                     if (listItem.classList.contains('completed')) {
                         localStorage.setItem(chapterId, 'completed');
@@ -187,6 +195,15 @@ function generatePlan(days, chaptersPerDay, containerId) {
             container.appendChild(dayCard);
             updateDayProgress(containerId, day);
         }
+        
+        // Debug log to verify chapters assignment
+        console.log(`Plan generated: ${daysToGenerate} days, ${chaptersPerDay} chapters/day (requested), ${chapterIndex}/${totalChapters} chapters assigned`);
+        
+        // If we couldn't fit all chapters in the specified days, warn about it
+        if (chapterIndex < totalChapters) {
+            console.warn(`Warning: Only ${chapterIndex} out of ${totalChapters} chapters were assigned. Consider increasing the number of days or chapters per day.`);
+        }
+        
     } catch (error) {
         console.error('Error generating reading plan:', error);
     }
@@ -262,5 +279,5 @@ function showPlan(planId) {
 window.addEventListener('load', function() {
     generatePlan(365, 5, 'plan365-content');
     generatePlan(180, 10, 'plan180-content');
-    generatePlan(90, 13, 'plan90-content');
+    generatePlan(90, 14, 'plan90-content');
 });
