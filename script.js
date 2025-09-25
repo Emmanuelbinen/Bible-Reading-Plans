@@ -77,6 +77,23 @@ const bibleBooks = [
             {name: "Revelation", chapters: 22}
         ];
 
+//Old Testament books count: 39 and 929 chapters
+const oldTestamentBooks = bibleBooks.slice(0, 39);
+//New Testament books count: 27 and 260 chapters
+const newTestamentBooks = bibleBooks.slice(39);
+// Chapter lists for each testament
+function createTestamentChapterList(testamentBooks) {
+    const chapters = [];
+    testamentBooks.forEach(book => {
+        for (let i = 1; i <= book.chapters; i++) {
+            chapters.push(`${book.name} ${i}`);
+        }
+    });
+    return chapters;
+}
+const oldTestamentChapters = createTestamentChapterList(oldTestamentBooks);
+const newTestamentChapters = createTestamentChapterList(newTestamentBooks);
+
 // This function will create chapter list with book and chapter references
 /**
  * Creates a flat array of all Bible chapters
@@ -101,15 +118,18 @@ function createChapterList() {
  * @param {string} containerId - DOM element ID where the plan will be rendered
  */
 
-function generatePlan(maxDays, chaptersPerDay, containerId) {
+function generatePlan(maxDays, chaptersPerDay, containerId, customChapters = null) {
     try {
         const container = document.getElementById(containerId);
         if (!container) {
             throw new Error(`Container with ID ${containerId} not found`);
         }
         
+        // Use custom chapters if provided, otherwise use all chapters
+        const chaptersToUse = customChapters || allChapters;
+        
         let chapterIndex = 0;
-        const totalChapters = allChapters.length;
+        const totalChapters = chaptersToUse.length;
         
         // Calculate actual number of days needed based on chaptersPerDay
         const actualDaysNeeded = Math.ceil(totalChapters / chaptersPerDay);
@@ -168,7 +188,7 @@ function generatePlan(maxDays, chaptersPerDay, containerId) {
                 const listItem = document.createElement('li');
                 const chapterId = `${containerId}-day-${day}-chapter-${i}`;
                 listItem.setAttribute('id', chapterId);
-                listItem.textContent = allChapters[chapterIndex];
+                listItem.textContent = chaptersToUse[chapterIndex];
                 
                 if (localStorage.getItem(chapterId) === 'completed') {
                     listItem.classList.add('completed');
@@ -241,9 +261,13 @@ function updateOverallProgress(planId) {
             completedDays++;
         }
     });
-    
+    // Extract total days from planId using RegExp to find the number in the planId
+    const match = planId.match(/\d+/);
+    const totalDays = match ? parseInt(match[0]) : 0;
+
+
     // Update progress display
-    const totalDays = parseInt(planId.replace('plan', ''));
+   // const totalDays = parseInt(planId.replace('plan', ''));
     const progressSpan = document.getElementById(`${planId}-progress`);
     const progressBar = document.getElementById(`${planId}-bar`);
     
@@ -280,4 +304,6 @@ window.addEventListener('load', function() {
     generatePlan(365, 5, 'plan365-content');
     generatePlan(180, 10, 'plan180-content');
     generatePlan(90, 14, 'plan90-content');
+    generatePlan(30, 9, 'planOT-content', newTestamentChapters);
+    generatePlan(60, 15, 'planNT-content', oldTestamentChapters);
 });
