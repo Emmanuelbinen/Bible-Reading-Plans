@@ -306,4 +306,6 @@ window.addEventListener('load', function() {
     generatePlan(90, 14, 'plan90-content');
     generatePlan(30, 9, 'planOT-content', newTestamentChapters);
     generatePlan(60, 15, 'planNT-content', oldTestamentChapters);
+    generatePlan(65, 4, 'planYouth65-content', newTestamentChapters);
+    generatePlan(65, 15, 'planOT65-content', oldTestamentChapters);
 });
