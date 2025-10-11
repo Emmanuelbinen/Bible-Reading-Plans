@@ -302,7 +302,7 @@ function showPlan(planId) {
  */
 window.addEventListener('load', function() {
     generatePlan(365, 5, 'plan365-content');
-    generatePlan(180, 10, 'plan180-content');
+    generatePlan(180, 7, 'plan180-content');
     generatePlan(90, 14, 'plan90-content');
     generatePlan(30, 9, 'planOT-content', newTestamentChapters);
     generatePlan(60, 15, 'planNT-content', oldTestamentChapters);
